@@ -6,6 +6,7 @@
     User logs in 
     [HttpGet] 
     Parameters - UserID 
+    Get - Validation token
 
     User can send email to organizer 
     [HttpPost] 
