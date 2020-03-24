@@ -1,3 +1,6 @@
+const express = require('express');
+var router = express.Router();
+
 /*
     User creates profile 
     [HttpPost] 
@@ -22,3 +25,5 @@
         - Number of seeds 
         - Date 
 */
+
+module.exports = router;

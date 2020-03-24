@@ -1,3 +1,6 @@
+const express = require('express');
+var router = express.Router();
+
 /*
     User views catalogue of all seeds 
     [HttpGet] 
@@ -32,3 +35,5 @@
     [HttpPut] 
     Parameter - Species - Borrowing_restricted condition 
 */
+
+module.exports = router;
