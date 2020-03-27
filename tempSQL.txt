@@ -1,0 +1,25 @@
+CREATE TABLE SEED (
+    species VARCHAR(50) NOT NULL,
+    variety VARCHAR(30),
+    common_name VARCHAR(30),
+    seed_type VARCHAR(15),
+    year_saved DATE
+    difficulty VARCHAR(6),
+    how_to_grow VARCHAR( A LOT ),
+    expected_size_cm FLOAT,
+    days_to_maturity INTEGER,
+    water_requirements XXXX,
+    preferred_sun VARCHAR(20),
+    borrowing_restricted BOOLEAN,
+    PRIMARY KEY (species),
+    FOREIGN KEY (companion_species) REFERENCES SEED(species)
+);
+
+CREATE TABLE CONTAINER (
+    containerID UNIQUEIDENTIFIER NOT NULL,
+    shelf_number INTEGER,
+    approx_num_seeds INTEGER,
+    PRIMARY KEY (containerID),
+    FOREIGN KEY (species) REFERENCES SEED(species)
+    FOREIGN KEY (address) REFERENCES STORAGE_LOCATION(address),
+);
