@@ -7,8 +7,14 @@ var router = express.Router();
     [HttpPost] 
     Parameters - UserID - Text content - Image
 */
-    router.post('/new', (req, res) => {
-        Post.newPost();
+    router.post('/new', /* authentication */ (req, res) => {
+        // req validation needed
+        
+        var userId = req.body.userId,
+            postText = req.body.postText;
+            postImage = req.body.postImage;
+        
+        Post.newPost(userId, postText, postImage);
     });
 /*
     User can view seed post 

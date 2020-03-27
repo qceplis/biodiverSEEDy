@@ -1,13 +1,20 @@
-exports.newPost = (req) => {
+const uniqid = require('uniqid');
+
+exports.newPost = (userId, postText, postImage) => {
+    var postId = uniqid();
+    var timestamp = new Date();
+    
     const post = {
-        userId: userId,
-        postText: postText,
-        postImage: postImage
+        _postId: postId,
+        _userId: userId,
+        _postText: postText,
+        _postImage: postImage,
+        _timestamp: timestamp
     };
 
     // call database handler
 
-    if (post.image) newImagePost(post.image);
+    if (post._postImage) newImagePost(post._postImage);
 }
 
 // Do I need to export this if newPost is being exported?
