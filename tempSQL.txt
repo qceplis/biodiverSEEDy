@@ -50,3 +50,22 @@ CREATE TABLE CONTAINER (
     FOREIGN KEY (seedID) REFERENCES SEED(seedID)
     FOREIGN KEY (address) REFERENCES STORAGE_LOCATION(address),
 );
+
+DELIMITER $$
+
+CREATE PROCEDURE getAllSeeds()
+BEGIN
+	SELECT * FROM SEED;
+END$$
+
+CREATE PROCEDURE createSeedOrder(IN userID INTEGER, species VARCHAR(50), order_date DATE, number_ordered INTEGER)
+BEGIN
+	INSERT INTO SEED_ORDER
+	VALUES(userID, species, return_date, number_ordered);
+END$$
+
+CREATE PROCEDURE createSeedHarvest(IN userID INTEGER, species VARCHAR(50), return_date DATE, number_returned INTEGER)
+BEGIN
+	INSERT INTO SEED_HARVEST
+	VALUES(userID, species, return_date, number_ordered);
+END$$
