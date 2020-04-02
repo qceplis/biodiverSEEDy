@@ -1,5 +1,13 @@
-const express = require('express');
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+const db = require("../db/postgres");
+
+router.get("/", (req, res) =>
+  db.pool.query(`SELECT * FROM "Seeds"`, (err, results) => {
+    if (err) throw err;
+    res.status(200).json(results.rows);
+  })
+);
 
 /*
     User views catalogue of all seeds 
