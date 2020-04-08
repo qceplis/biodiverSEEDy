@@ -31,7 +31,7 @@ router.get("/", (req, res) =>
     [HttpPut] 
     Parameter - ContainerID - Shelf Number - Species - Common Name 
 
-    Volunteer indicates neww seed location 
+    Volunteer indicates new seed location 
     [HttpPut] 
     Parameter - ContainerID - Shelf Number - Species - Common Name 
 
