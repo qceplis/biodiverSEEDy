@@ -4,8 +4,18 @@ const db = require("../db/postgres");
 const uniqid = require("uniqid");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const auth = require("../middleware/auth");
 const { check, validationResult } = require("express-validator/check");
 require("dotenv").config({ path: "../.env" });
+
+/*
+searchUser->
+    mid - member id
+    uname - username
+    phash - hashed password
+    vstatus - volunteer boolean
+    hours - number of hours worked as volunteer
+*/
 
 router.post(
   "/signup",
@@ -92,7 +102,7 @@ router.post(
     }
     try {
       const { username, password } = req.body;
-      const searchQuery = "select * from searchuser($1)";
+      const searchQuery = "select * from searchUser($1)";
       const searchValues = [username];
       searchResults = await db.pool.query(searchQuery, searchValues);
 
@@ -111,10 +121,9 @@ router.post(
           message: "Incorrect password"
         });
       }
-
       const payload = {
         user: {
-          id: searchResults.rows[0].mID
+          id: searchResults.rows[0].mid
         }
       };
 
@@ -135,11 +144,45 @@ router.post(
       );
     } catch (err) {
       console.log(err.stack);
-      res.status(500).send("error in signup");
+      res.status(500).send("error in login");
     }
   }
 );
 
+router.get("/:username/history", auth, async (req, res) => {
+  try {
+    //Check credentials of current logged in user
+    const searchQuery = "select * from searchuserbyid($1)";
+    const searchValue = [req.user.id];
+
+    const curUser = await db.pool.query(searchQuery, searchValue);
+    //Check credentials of looked up user
+    const searchTarQuery = "select * from searchuser($1)";
+    const searchTarValue = [req.params.username];
+    const targetUser = await db.pool.query(searchTarQuery, searchTarValue);
+
+    if (!curUser || !targetUser) {
+      return res.status(400).json("Could not find user");
+    }
+    if (curUser.vstatus || curUser.rows[0].mid == targetUser.rows[0].mid) {
+      const getTransactionQuery = "select * from getAllTransaction($1)";
+      const getTransactionValue = [targetUser.rows[0].mid];
+      const result = await db.pool.query(
+        getTransactionQuery,
+        getTransactionValue
+      );
+      return res.status(200).json(result.rows);
+    }
+    return res.status(400).json("Invalid Permissions");
+  } catch (err) {
+    console.log(err.stack);
+    res.status(500).send("Failed History Lookup");
+  }
+});
+
+router.get("/me", auth, async (req, res) => {
+  res.status(200).json({ id: req.user.id });
+});
 /*
     User creates profile 
     [HttpPost] 
