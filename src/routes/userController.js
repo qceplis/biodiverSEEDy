@@ -20,19 +20,17 @@ searchUser->
 router.post(
   "/signup",
   [
-    check("username", "Please Enter a Valid Username")
-      .not()
-      .isEmpty(),
+    check("username", "Please Enter a Valid Username").not().isEmpty(),
     check("password", "Please enter a valid password").isLength({
-      min: 6
-    })
+      min: 6,
+    }),
   ],
 
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        errors: errors.array()
+        errors: errors.array(),
       });
     }
     try {
@@ -43,7 +41,7 @@ router.post(
 
       if (searchResults.rows.length > 0) {
         return res.status(400).json({
-          msg: "User Already Exists"
+          msg: "User Already Exists",
         });
       }
 
@@ -56,22 +54,22 @@ router.post(
 
       const payload = {
         user: {
-          id: memberID
-        }
+          id: memberID,
+        },
       };
 
       jwt.sign(
         payload,
         process.env.TOKENSIG,
         {
-          expiresIn: 10000
+          expiresIn: 10000,
         },
         (err, token) => {
           if (err) {
             throw err;
           }
           res.status(200).json({
-            token
+            token,
           });
         }
       );
@@ -85,19 +83,15 @@ router.post(
 router.post(
   "/login",
   [
-    check("username", "Please Enter a Valid Username")
-      .not()
-      .isEmpty(),
-    check("password", "Please enter a valid password")
-      .not()
-      .isEmpty()
+    check("username", "Please Enter a Valid Username").not().isEmpty(),
+    check("password", "Please enter a valid password").not().isEmpty(),
   ],
 
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        errors: errors.array()
+        errors: errors.array(),
       });
     }
     try {
@@ -108,7 +102,7 @@ router.post(
 
       if (searchResults.rows.length != 1) {
         return res.status(400).json({
-          msg: "User does not exist"
+          msg: "User does not exist",
         });
       }
 
@@ -118,27 +112,27 @@ router.post(
       );
       if (!isMatch) {
         return res.status(400).json({
-          message: "Incorrect password"
+          message: "Incorrect password",
         });
       }
       const payload = {
         user: {
-          id: searchResults.rows[0].mid
-        }
+          id: searchResults.rows[0].mid,
+        },
       };
 
       jwt.sign(
         payload,
         process.env.TOKENSIG,
         {
-          expiresIn: 10000
+          expiresIn: 10000,
         },
         (err, token) => {
           if (err) {
             throw err;
           }
           res.status(200).json({
-            token
+            token,
           });
         }
       );
@@ -154,8 +148,8 @@ router.get("/:username/history", auth, async (req, res) => {
     //Check credentials of current logged in user
     const searchQuery = "select * from searchuserbyid($1)";
     const searchValue = [req.user.id];
-
     const curUser = await db.pool.query(searchQuery, searchValue);
+
     //Check credentials of looked up user
     const searchTarQuery = "select * from searchuser($1)";
     const searchTarValue = [req.params.username];

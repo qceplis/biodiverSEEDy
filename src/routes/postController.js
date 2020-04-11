@@ -1,5 +1,5 @@
-const express = require('express')
-    , Post = require('../models/Post');
+const express = require("express"),
+  Post = require("../models/Post");
 var router = express.Router();
 
 /*
@@ -7,15 +7,18 @@ var router = express.Router();
     [HttpPost] 
     Parameters - UserID - Text content - Image
 */
-    router.post('/new', /* authentication */ (req, res) => {
-        // req validation needed
-        
-        var userId = req.body.userId,
-            postText = req.body.postText;
-            postImage = req.body.postImage;
-        
-        Post.newPost(userId, postText, postImage);
-    });
+router.post(
+  "/new",
+  /* authentication */ (req, res) => {
+    // req validation needed
+
+    var userId = req.body.userId,
+      postText = req.body.postText;
+    postImage = req.body.postImage;
+
+    Post.newPost(userId, postText, postImage);
+  }
+);
 /*
     User can view seed post 
     [HttpGet] 
@@ -29,4 +32,3 @@ var router = express.Router();
 */
 
 module.exports = router;
- 
