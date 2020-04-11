@@ -14,9 +14,21 @@ router.get("/", (req, res) =>
     [HttpGet] 
     Get - Catalogue as list 
  
+    
     User sorts catalogue based on criteria 
     [HttpGet] 
-    Parameters (at least one) - Species - Variety - CommonName - SeedType - YearSaved - Difficulty - ExpectedSize - LengthToMaturity - WaterRequirements - PreferedSun - CompanionSpecies 
+    Parameters (at least one) 
+    - Species 
+    - Variety 
+    - CommonName 
+    - SeedType 
+    - YearSaved 
+    - Difficulty 
+    - ExpectedSize 
+    - LengthToMaturity 
+    - WaterRequirements 
+    - PreferedSun 
+    - CompanionSpecies 
     Get - Sorted catalogue results as list 
 
     User requests seeds for pickup 
@@ -37,11 +49,27 @@ router.get("/", (req, res) =>
 
     Volunteer Updates seed information 
     [HttpPut] 
-    Parameter (at least one) - Variety - CommonName - SeedType - YearSaved - Difficulty - HowToGrow - ExpectedSize - LengthToMaturity - WaterRequirements - PreferedSun - BorrowingRestriction - Location - Shelf Number - CompanionSpecies 
+    Parameter (at least one) 
+    - Variety 
+    - CommonName 
+    - SeedType 
+    - YearSaved 
+    - Difficulty 
+    - HowToGrow 
+    - ExpectedSize 
+    - LengthToMaturity 
+    - WaterRequirements 
+    - PreferedSun 
+    - BorrowingRestriction 
+    - Location 
+    - Shelf Number 
+    - CompanionSpecies 
 
     Admin can toggle borrowing of low stock seed
     [HttpPut] 
-    Parameter - Species - Borrowing_restricted condition 
+    Parameter 
+    - Species 
+    - Borrowing_restricted condition 
 */
 
 module.exports = router;
