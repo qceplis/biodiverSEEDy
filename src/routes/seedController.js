@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../db/postgres");
 const auth = require("../middleware/auth");
 const authutil = require("../util/authenticationUtil");
+const uniqid = require("uniqid");
 
 router.get("/", (req, res) =>
   db.pool.query(`SELECT * FROM getallseeds()`, (err, results) => {
@@ -63,6 +64,39 @@ router.get("/search", auth, async (req, res) => {
   }
 });
 
+router.post("/container", auth, async (req, res) => {
+  try {
+    if (await authutil.checkVolunteer) {
+      const newContQuery = "CALL newcontainer($1, $2, $3)";
+      const newContValue = [
+        uniqid(),
+        req.body.shelfnumber,
+        req.body.quantity,
+        req.body.species,
+        req.body.storagelocation,
+      ];
+      await db.pool.query(newContQuery, newContValue);
+      return res.status(200).json();
+    }
+  } catch (err) {
+    console.log(err.stack);
+    res.status.send("Failed to register return");
+  }
+});
+
+router.put("/container/count/:container", auth, async (req, res) => {
+  try {
+    if (await authutil.checkVolunteer) {
+      const countQuery = "CALL updateseedcount($1, $2)";
+      const countValue = [req.params.container, req.body.quantity];
+      await db.pool.query(newContQuery, newContValue);
+      return res.status(200).json();
+    }
+  } catch (err) {
+    console.log(err.stack);
+    res.status.send("Failed to register return");
+  }
+});
 /*
     User views catalogue of all seeds 
     [HttpGet] 
