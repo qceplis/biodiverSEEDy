@@ -17,7 +17,6 @@ router.post("/order", auth, async (req, res) => {
     const orderQuery = "CALL neworder($1, $2, $3)";
     const orderValue = [req.user.id, req.body.seed, req.body.quantity];
     await db.pool.query(orderQuery, orderValue);
-    console.log("test");
     return res.status(200).send("Success");
   } catch (err) {
     console.log(err.stack);
@@ -56,7 +55,7 @@ router.put("/toggleavailability/:seed", auth, async (req, res) => {
   }
 });
 
-router.get("/search", auth, async (req, res) => {
+router.get("/search", async (req, res) => {
   try {
     const searchQuery = "select * from searchseedsbycriteria($1, $2, $3)";
     const searchValue = [req.body.seed, req.body.commonname, req.body.seedtype];
@@ -71,12 +70,12 @@ router.get("/search", auth, async (req, res) => {
 router.post("/container", auth, async (req, res) => {
   try {
     if (await authutil.checkVolunteer) {
-      const newContQuery = "CALL newcontainer($1, $2, $3)";
+      const newContQuery = "CALL newcontainer($1, $2, $3, $4, $5)";
       const newContValue = [
         uniqid(),
         req.body.shelfnumber,
         req.body.quantity,
-        req.body.species,
+        req.body.seed,
         req.body.storagelocation,
       ];
       await db.pool.query(newContQuery, newContValue);
@@ -84,7 +83,7 @@ router.post("/container", auth, async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(500).send("Failed to register return");
+    res.status(500).send("Failed to register container");
   }
 });
 
@@ -93,12 +92,12 @@ router.put("/container/count/:container", auth, async (req, res) => {
     if (await authutil.checkVolunteer) {
       const countQuery = "CALL updateseedcount($1, $2)";
       const countValue = [req.params.container, req.body.quantity];
-      await db.pool.query(newContQuery, newContValue);
+      await db.pool.query(countQuery, countValue);
       return res.status(200).send("Success");
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(500).send("Failed to register return");
+    res.status(500).send("Failed to register new amount");
   }
 });
 
@@ -147,7 +146,7 @@ router.put("/:species", auth, async (req, res) => {
 router.put("/:species/nutrition", auth, async (req, res) => {
   try {
     if (await authutil.checkVolunteer) {
-      const query = "CALL * addnutrition($1, $2, $3)";
+      const query = "CALL addnutrition($1, $2, $3)";
       const value = [
         req.body.nutrition,
         req.body.nquantity,
@@ -158,7 +157,7 @@ router.put("/:species/nutrition", auth, async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(500).send("Failed to register return");
+    res.status(500).send("Failed to register nutritional value");
   }
 });
 
@@ -168,7 +167,7 @@ router.post("/", auth, async (req, res) => {
       const query =
         "CALL newseed($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)";
       const value = [
-        req.params.species,
+        req.body.species,
         req.body.cname,
         req.body.seedtype,
         req.body.harvestyear,
