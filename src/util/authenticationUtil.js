@@ -1,5 +1,6 @@
 const db = require("../db/postgres");
-authutil.checkVolunteer = async (id) => {
+
+exports.checkVolunteer = async (id) => {
   try {
     const searchQuery = "select * from searchuserbyid($1)";
     const searchValue = [req.user.id];
@@ -11,7 +12,7 @@ authutil.checkVolunteer = async (id) => {
   return false;
 };
 
-authutil.getUser = async (id) => {
+exports.getUser = async (id) => {
   try {
     const searchQuery = "select * from searchuserbyid($1)";
     const searchValue = [req.user.id];
@@ -22,4 +23,3 @@ authutil.getUser = async (id) => {
   }
   return;
 };
-module.exports = authutil;

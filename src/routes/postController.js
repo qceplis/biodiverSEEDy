@@ -1,24 +1,64 @@
-const express = require("express"),
-  Post = require("../models/Post");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+const db = require("../db/postgres");
+const auth = require("../middleware/auth");
+const authutil = require("../util/authenticationUtil");
+const uniqid = require("uniqid");
 
 /*
     User adds new post 
     [HttpPost] 
     Parameters - UserID - Text content - Image
 */
-router.post(
-  "/new",
-  /* authentication */ (req, res) => {
-    // req validation needed
-
-    var userId = req.body.userId,
-      postText = req.body.postText;
-    postImage = req.body.postImage;
-
-    Post.newPost(userId, postText, postImage);
+router.get("/:post", async (req, res) => {
+  try {
+    const query = "Select * from getpostbyid($1)";
+    const value = [req.params.post];
+    const results = await db.pool.query(query, value);
+    return res.status(200).json(results.rows);
+  } catch (err) {
+    console.log(err.stack);
+    res.status(500).send("Failed to register return");
   }
-);
+});
+
+router.get("/sort/:species", async (req, res) => {
+  try {
+    const query = "Select * from getpostbyspecies($1)";
+    const value = [req.params.species];
+    const results = await db.pool.query(query, value);
+    return res.status(200).json(results.rows);
+  } catch (err) {
+    console.log(err.stack);
+    res.status(500).send("Failed to register return");
+  }
+});
+
+router.post("/", auth, async (req, res) => {
+  try {
+    if (req.body.image) {
+      const query = "CALL newimagepost($1, $2, $3, $4)";
+      const value = [
+        uniqid(),
+        req.body.text,
+        req.user.id,
+        req.body.species,
+        req.body.imageurl,
+      ];
+      await db.pool.query(query, value);
+    } else {
+      const query = "CALL newpost($1, $2, $3, $4)";
+      const value = [uniqid(), req.body.text, req.user.id, req.body.species];
+      await db.pool.query(query, value);
+    }
+
+    return res.status(200).send("Success");
+  } catch (err) {
+    console.log(err.stack);
+    res.status(500).send("Failed to register return");
+  }
+});
+
 /*
     User can view seed post 
     [HttpGet] 
